@@ -1,0 +1,6 @@
+alembic.ini
+backend/alembic
+**__pycache__**
+Dockerfile
+.dockerignore
+**README**)

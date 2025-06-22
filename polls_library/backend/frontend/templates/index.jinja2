@@ -1,0 +1,20 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+<h1>Welcome to Poll App</h1>
+{% if current_user %}
+    <div class="mb-2">
+        <a href="{{ url_for('frontend_create_poll') }}" class="btn btn-primary">Create Poll</a>
+    </div>
+    <div class="mb-2">
+        <a href="{{ url_for('frontend_read_polls') }}" class="btn btn-secondary">View Polls</a>
+    </div>
+    <div class="mb-2">
+        <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+    </div>
+{% else %}
+    <div class="mb-2">
+        <a href="{{ url_for('login') }}" class="btn btn-success">Login with Google</a>
+    </div>
+{% endif %}
+{% endblock %}

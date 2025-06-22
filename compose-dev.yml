@@ -1,0 +1,21 @@
+services:
+  web:
+    build: ./polls_library
+    image: polls-library-dev
+    container_name: polls-library-backend-dev
+    develop:
+      watch: 
+        - path: ./polls_library
+          action: sync
+          target: /app
+    ports:
+      - "8000:${BACKEND_PORT}"
+    env_file:
+      - .env
+    environment:
+      - ENVIRONMENT=DEV
+    volumes:
+      - dev-db:/app/db:rw
+
+volumes:
+  dev-db:

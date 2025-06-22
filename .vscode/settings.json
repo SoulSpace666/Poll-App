@@ -1,0 +1,12 @@
+{
+    "python.analysis.inlayHints.pytestParameters": false,
+    "python.analysis.typeCheckingMode": "off",
+    "python.analysis.importFormat": "relative",
+    "containers.commands.composeUp": [
+        
+        {
+            "label": "Compose Up",
+            "template": "${composeCommand} ${configurationFile} up ${build} --watch"
+        }
+    ],
+}

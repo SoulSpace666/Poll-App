@@ -1,0 +1,139 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Create a Poll</h1>
+    <form id="poll-form" action="{{ API_CALL_STR }}" method="POST">
+        <div class="mb-3">
+            <label for="title" class="form-label">Title *</label>
+            <input type="text" id="title" name="title" class="form-control" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea id="description" name="description" class="form-control"></textarea>
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" id="multiple_choice" name="multiple_choice" class="form-check-input">
+            <label for="multiple_choice" class="form-check-label">Multiple Choice</label>
+        </div>
+
+        <div class="form-check mb-3">
+            <input type="checkbox" id="anonymous" name="anonymous" class="form-check-input">
+            <label for="anonymous" class="form-check-label">Anonymous</label>
+        </div>
+
+        <div class="mb-3">
+            <label for="expires_at" class="form-label">Expires At</label>
+            <input type="datetime-local" id="expires_at" name="expires_at" class="form-control">
+        </div>
+
+        <div class="mb-3" id="options_container">
+            <label class="form-label">Options</label>
+            <div class="row mb-2" id="option">
+                <div class="col">
+                    <input type="text" name="options[0]" class="form-control" required>
+                </div>
+                <div class="col-auto">
+                    <button type="button" class="btn btn-danger" onclick="removeOption(this)">Remove</button>
+                </div>
+            </div>
+        </div>
+        <div class="row mb-2" id="option">
+            <button type="button" class="btn btn-success mb-3" onclick="addOption()">Add Option</button>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</div>
+
+<script>
+    let optionCount = 1;
+
+    function addOption() {
+        const container = document.getElementById('options_container');
+        const newOption = document.createElement('div');
+        newOption.className = 'row mb-2';
+        newOption.innerHTML = `
+            <div class="col">
+                <input type="text" name="options[${optionCount}]" class="form-control" required>
+            </div>
+            <div class="col-auto">
+                <button type="button" class="btn btn-danger" onclick="removeOption(this)">Remove</button>
+            </div>
+        `;
+        container.appendChild(newOption);
+        optionCount++;
+    }
+
+    function removeOption(button) {
+        button.closest('.row').remove();
+    }
+
+    document.getElementById('poll-form').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+        const data = {};
+
+        const title = formData.get('title');
+        if (title) {
+            data.title = title;
+        }
+
+        const description = formData.get('description');
+        if (description) {
+            data.description = description;
+        }
+
+        const multipleChoice = formData.get('multiple_choice');
+        if (multipleChoice === 'on') {
+            data.multiple_choice = true;
+        }
+
+        const anonymous = formData.get('anonymous');
+        if (anonymous === 'on') {
+            data.anonymous = true;
+        }
+
+        const expiresAt = formData.get('expires_at');
+        if (expiresAt) {
+            data.expires_at = expiresAt;
+        }
+
+        data.options = [];
+        for (let i = 0; i < optionCount; i++) {
+            const optionTitle = formData.get(`options[${i}]`);
+            if (optionTitle) {
+                data.options.push({ title: optionTitle });
+            }
+        }
+
+        // Send the data as JSON only if there are fields to send
+        if (Object.keys(data).length > 0) {
+            fetch('/api/v1/polls/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok: ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('Success:', result);
+                window.location.replace("/frontend/polls/");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    });
+</script>
+
+{% endblock %}2

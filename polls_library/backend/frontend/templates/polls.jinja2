@@ -1,0 +1,173 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+<h1>Created polls</h1>
+{% for poll in polls %}
+{% set existing_vote = user_votes.get(poll.id) %}
+<div class="poll" id="poll-{{ poll.id }}">
+    <h3>{{ poll.title }}</h3>
+    
+    {% if existing_vote %}
+        <div class="already-voted">
+            <p>You have already voted in this poll.</p>
+            <ul>
+                {% for option_id, option_title in existing_vote.items() %}
+                    <li>{{ option_title }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% else %}
+        <form class="vote-form" id="vote-form-{{ poll.id }}">
+            <ul>
+                {% for option in poll.options %}
+                <li>
+                    {% if poll.multiple_choice %}
+                        <input type="checkbox" name="options" value="{{ option.id }}" data-poll-id="{{ poll.id }}">
+                    {% else %}
+                        <input type="radio" name="option" value="{{ option.id }}" data-poll-id="{{ poll.id }}">
+                    {% endif %}
+                    {{ option.title }}
+                </li>
+                {% endfor %}
+            </ul>
+            <button type="submit">Vote</button>
+        </form>
+
+        <script>
+            document.getElementById('vote-form-{{ poll.id }}').addEventListener('submit', async function(event) {
+                event.preventDefault();
+                
+                const pollId = {{ poll.id }};
+                const isMultiple = {{ poll.multiple_choice | lower }};
+                const selectedOptions = [];
+                
+                if (isMultiple) {
+                    const checkboxes = this.querySelectorAll('input[type="checkbox"]:checked');
+                    checkboxes.forEach(checkbox => {
+                        selectedOptions.push(checkbox.value);
+                    });
+                } else {
+                    const selectedOption = this.querySelector('input[type="radio"]:checked');
+                    if (selectedOption) {
+                        selectedOptions.push(selectedOption.value);
+                    }
+                }
+                
+                if (selectedOptions.length === 0) {
+                    alert('Please select at least one option');
+                    return;
+                }
+                
+                const data = {
+                    poll_id: pollId,
+                    selected_options: selectedOptions
+                };
+                
+                try {
+                    // отправка данных на API
+                    const response = await fetch("{{ url_for('create_vote_api') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    });
+                    
+                    if (response.ok) {
+                        window.location.href = "{{ url_for('vote_success') }}";
+                    } else {
+                        const errorData = await response.json();
+                        alert(`Error: ${errorData.detail || 'Unknown error'}`);
+                    }
+                } catch (error) {
+                    console.error('Network error:', error);
+                    alert('Network error, please try again later');
+                }
+            });
+        </script>
+    {% endif %}
+</div>
+{% else %}
+<p>No polls created yet.</p>
+{% endfor %}
+<ul class="pagination">
+    {% if page > 1 %}
+    <li class="page-item">
+        <a class="page-link" href="{{ url_for('frontend_read_polls_with_page', page=page-1) }}">Previous</a>
+    </li>
+    {% endif %}
+    
+    <li class="page-item active">
+        <a class="page-link" href="#">{{ page }}</a>
+    </li>
+    
+    {% if page < max_page %}
+    <li class="page-item">
+        <a class="page-link" href="{{ url_for('frontend_read_polls_with_page', page=page+1) }}">Next</a>
+    </li>
+    {% endif %}
+</ul>
+
+<style>
+    .poll {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 30px;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    
+    .already-voted {
+        background-color: #f0f8ff;
+        padding: 10px;
+        border-radius: 5px;
+        margin-top: 10px;
+    }
+    
+    button {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background-color 0.3s;
+        margin-top: 15px;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .pagination {
+        display: flex;
+        list-style: none;
+        padding: 0;
+        justify-content: center;
+        margin-top: 30px;
+    }
+
+    .page-item {
+        margin: 0 5px;
+    }
+
+    .page-link {
+        display: block;
+        padding: 8px 16px;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 5px;
+        color: #007bff;
+    }
+
+    .page-item.active .page-link {
+        background-color: #007bff;
+        color: white;
+        border-color: #007bff;
+    }
+</style>
+{% endblock %}

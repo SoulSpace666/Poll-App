@@ -1,0 +1,52 @@
+{% extends "base.jinja2" %}
+
+{% block content %}
+<div class="success-container">
+    <h1>Thank You for Voting!</h1>
+    <p>Your vote has been successfully recorded.</p>
+    <a href="{{ url_for('frontend_read_polls_with_page', page=1) }}" class="back-link">Back to Polls</a>
+</div>
+
+<style>
+    .navbar {
+        display: none;
+    }
+
+    .success-container {
+        text-align: center;
+        padding: 50px;
+        max-width: 600px;
+        margin: 40px auto;
+        background-color: #d4edda;
+        color: #155724;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+        color: #0f5132;
+        font-size: 2.5em;
+        margin-bottom: 20px;
+    }
+
+    p {
+        font-size: 1.2em;
+        margin-bottom: 30px;
+    }
+
+    .back-link {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: #0f5132;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        font-size: 1.1em;
+        transition: background-color 0.3s;
+    }
+
+    .back-link:hover {
+        background-color: #0a3c24;
+    }
+</style>
+{% endblock %}
