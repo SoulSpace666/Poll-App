@@ -1,7 +1,7 @@
 {% extends "base.jinja2" %}
 
 {% block content %}
-<h1>Created polls</h1>
+<h1>Созданные опросы</h1>
 {% for poll in polls %}
 {% set existing_vote = user_votes.get(poll.id) %}
 <div class="poll" id="poll-{{ poll.id }}">
@@ -9,7 +9,7 @@
     
     {% if existing_vote %}
         <div class="already-voted">
-            <p>You have already voted in this poll.</p>
+            <p>Вы уже голосовали в этом опросе.</p>
             <ul>
                 {% for option_id, option_title in existing_vote.items() %}
                     <li>{{ option_title }}</li>
@@ -30,7 +30,7 @@
                 </li>
                 {% endfor %}
             </ul>
-            <button type="submit">Vote</button>
+            <button type="submit">Проголосовать</button>
         </form>
 
         <script>
@@ -89,7 +89,7 @@
     {% endif %}
 </div>
 {% else %}
-<p>No polls created yet.</p>
+<p>Нет созданных опросов.</p>
 {% endfor %}
 <ul class="pagination">
     {% if page > 1 %}

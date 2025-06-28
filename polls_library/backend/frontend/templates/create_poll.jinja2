@@ -2,49 +2,49 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Create a Poll</h1>
+    <h1 class="mb-4">Создать опрос</h1>
     <form id="poll-form" action="{{ API_CALL_STR }}" method="POST">
         <div class="mb-3">
-            <label for="title" class="form-label">Title *</label>
+            <label for="title" class="form-label">Название*</label>
             <input type="text" id="title" name="title" class="form-control" required>
         </div>
 
         <div class="mb-3">
-            <label for="description" class="form-label">Description</label>
+            <label for="description" class="form-label">Описание</label>
             <textarea id="description" name="description" class="form-control"></textarea>
         </div>
 
         <div class="form-check mb-3">
             <input type="checkbox" id="multiple_choice" name="multiple_choice" class="form-check-input">
-            <label for="multiple_choice" class="form-check-label">Multiple Choice</label>
+            <label for="multiple_choice" class="form-check-label">Множественный выбор</label>
         </div>
 
         <div class="form-check mb-3">
             <input type="checkbox" id="anonymous" name="anonymous" class="form-check-input">
-            <label for="anonymous" class="form-check-label">Anonymous</label>
+            <label for="anonymous" class="form-check-label">Анонимность</label>
         </div>
 
         <div class="mb-3">
-            <label for="expires_at" class="form-label">Expires At</label>
+            <label for="expires_at" class="form-label">Истекает в</label>
             <input type="datetime-local" id="expires_at" name="expires_at" class="form-control">
         </div>
 
         <div class="mb-3" id="options_container">
-            <label class="form-label">Options</label>
+            <label class="form-label">Варианты ответа</label>
             <div class="row mb-2" id="option">
                 <div class="col">
                     <input type="text" name="options[0]" class="form-control" required>
                 </div>
                 <div class="col-auto">
-                    <button type="button" class="btn btn-danger" onclick="removeOption(this)">Remove</button>
+                    <button type="button" class="btn btn-danger" onclick="removeOption(this)">Удалить</button>
                 </div>
             </div>
         </div>
         <div class="row mb-2" id="option">
-            <button type="button" class="btn btn-success mb-3" onclick="addOption()">Add Option</button>
+            <button type="button" class="btn btn-success mb-3" onclick="addOption()">Добавить вариант</button>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Подтвердить</button>
     </form>
 </div>
 
@@ -60,7 +60,7 @@
                 <input type="text" name="options[${optionCount}]" class="form-control" required>
             </div>
             <div class="col-auto">
-                <button type="button" class="btn btn-danger" onclick="removeOption(this)">Remove</button>
+                <button type="button" class="btn btn-danger" onclick="removeOption(this)">Удалить</button>
             </div>
         `;
         container.appendChild(newOption);
