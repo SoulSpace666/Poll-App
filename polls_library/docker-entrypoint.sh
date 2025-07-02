@@ -1,3 +1,4 @@
+#!/bin/sh
 LIGHT_GREEN='\033[1;32m'
 NC='\033[0m' # No Color
 
@@ -15,7 +16,7 @@ exec uvicorn backend.main:app --host $BACKEND_HOST --reload --port $BACKEND_PORT
 elif [ "$ENVIRONMENT" = "PROD" ]; then
 
 color_print "Starting production server"
-exec gunicorn --bind 0.0.0.0:8000 settings.wsgi:application --workers $(($(nproc) * 2 + 1)) --timeout 1600 -k uvicorn.workers.UvicornWorker
+exec gunicorn --bind 0.0.0.0:8000 backend.main:app --workers $(($(nproc) * 2 + 1)) --timeout 1600 -k uvicorn.workers.UvicornWorker
 
 fi
 

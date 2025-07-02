@@ -16,7 +16,7 @@ class Settings(BaseSettings):
     )
 
     # DEBUG SETTINGS
-    @computed_field  # type: ignore
+    @computed_field  # type: ignore[misc]
     @property
     def DEBUG(self) -> bool:
         return True if self.ENVIRONMENT == "DEV" else False
@@ -52,7 +52,7 @@ class Settings(BaseSettings):
     GOOGLE_CLIENT_SECRET: str
     GOOGLE_DISCOVERY_URL: str
 
-    @computed_field  # type: ignore
+    @computed_field  # type: ignore[misc]
     @property
     def SQLALCHEMY_DATABASE_URI(self) -> PostgresDsn:
         if settings.DEBUG_USE_SQLITE:
@@ -60,7 +60,7 @@ class Settings(BaseSettings):
             return f"sqlite+aiosqlite:///db/{sqlite_file_name}"
         else:
             return MultiHostUrl.build(
-                scheme="postgresql+psycopg",
+                scheme="postgresql+asyncpg",
                 username=self.POSTGRES_USER,
                 password=self.POSTGRES_PASSWORD,
                 host=self.POSTGRES_SERVER,
@@ -70,4 +70,4 @@ class Settings(BaseSettings):
 
 
 
-settings = Settings()  # type: ignore
+settings = Settings()  # type: ignore[misc]

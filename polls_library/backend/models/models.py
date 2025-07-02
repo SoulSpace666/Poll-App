@@ -19,7 +19,7 @@ class UserModel(BaseModel):
 
 
     # Relationships
-    polls: Mapped[list["PollModel"]] = relationship(back_populates="author", lazy="selectin", cascade="all, delete, delete-orphan") #?do we delete polls when user is deleted or not
+    polls: Mapped[list["PollModel"]] = relationship(back_populates="author", lazy="selectin", cascade="all, delete, delete-orphan")
     votes: Mapped[list["VoteModel"]] = relationship(back_populates="voter", lazy="selectin", cascade="all, delete, delete-orphan")
 
 
@@ -63,7 +63,7 @@ class VoteModel(BaseModel):
     id: Mapped[UUID] = mapped_column(default=uuid4, primary_key=True)
 
     # voter & voter_id are '| None' for allowing user.votes=None
-    voter_id: Mapped[EmailStr | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)  #? should we delete all votes of a deleted user
+    voter_id: Mapped[EmailStr | None] = mapped_column(ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
     voter: Mapped["UserModel | None"] = relationship(back_populates="votes", lazy="selectin")
     poll_id: Mapped[int] = mapped_column(ForeignKey("polls.id", ondelete="CASCADE"), nullable=False)
     poll: Mapped["PollModel"] = relationship(back_populates="votes", lazy="selectin", passive_deletes=True)
