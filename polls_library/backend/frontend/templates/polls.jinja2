@@ -3,11 +3,18 @@
 {% block content %}
 <h1>Созданные опросы</h1>
 {% for poll in polls %}
+{% set now = datetime.utcnow().timestamp() | float %}
+{% set expires_at = poll.expires_at.timestamp() | float if poll.expires_at else 0 %}
+{% set is_expired = poll.expires_at and expires_at < now %}
 {% set existing_vote = user_votes.get(poll.id) %}
 <div class="poll" id="poll-{{ poll.id }}">
     <h3>{{ poll.title }}</h3>
-    
-    {% if existing_vote %}
+    {% if is_expired %}
+        <div class="alert alert-warning">
+            <p>Голосование завершено</p>
+            <p>Опрос закрыт {{ poll.expires_at.strftime('%d.%m.%Y в %H:%M') }}</p>
+        </div>
+    {% elif existing_vote %}
         <div class="already-voted">
             <p>Вы уже голосовали в этом опросе.</p>
             <ul>

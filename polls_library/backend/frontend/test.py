@@ -3,6 +3,7 @@ from fastapi.templating import Jinja2Templates
 from fastapi import APIRouter, Request
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
+from datetime import datetime
 
 from ..config import settings
 from ..api.deps import CurrentUser, SessionDep
@@ -84,7 +85,8 @@ async def read_polls(
             "polls_count": total_polls,
             "user_votes": user_votes,
             "user_votes_count": len(user_votes),
-            "max_page": max_page
+            "max_page": max_page,
+            "datetime": datetime
         },
     )
 

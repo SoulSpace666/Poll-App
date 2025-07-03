@@ -1,6 +1,7 @@
 from uuid import UUID
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import PlainTextResponse
+from datetime import datetime, timezone
 
 from ...crud import CrudFactory
 from ..deps import CurrentUser, SessionDep
@@ -99,6 +100,10 @@ async def create_vote(
     if count>1 and not (await PollCrud.read(session, vote_in.poll_id)).multiple_choice:
         raise HTTPException(status_code=400, detail="This poll is not multiple choice")
 
+    #сhecking the validity period
+    poll = await PollCrud.read(session, vote_in.poll_id)
+    if poll.expires_at and poll.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=400, detail="Voting for this poll has closed")
 
     vote = await VoteCrud.create_instance(
         session,
